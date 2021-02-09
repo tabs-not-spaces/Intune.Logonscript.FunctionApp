@@ -1,0 +1,38 @@
+{
+  "drives": [
+    {
+      "group": [
+        "ALLUSERS"
+      ],
+      "drives": [
+        {
+          "driveLetter": "G",
+          "uncPath": "\\\\FILESERVER.CORP\\GroupShare"
+        }
+      ]
+    },
+    {
+      "group": [
+        "ExecutiveSec"
+      ],
+      "drives": [
+        {
+          "driveLetter": "H",
+          "uncPath": "\\\\FILESERVER.CORP\\BUSINESSSECRETS"
+        }
+      ]
+    },
+    {
+      "group": [
+        "InternSec",
+        "ExecutiveSec"
+      ],
+      "drives": [
+        {
+          "driveLetter": "I",
+          "uncPath": "\\\\FILESERVER.CORP\\INTERNTHINGS"
+        }
+      ]
+    }
+  ]
+}

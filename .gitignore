@@ -1,0 +1,5 @@
+local.settings.json
+.tests
+azure-pipelines.yml
+.localenv
+TestExplorerResults.xml

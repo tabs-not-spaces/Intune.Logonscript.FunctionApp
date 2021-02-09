@@ -1,0 +1,209 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "drives": [
+                {
+                    "group": [
+                        "ALLUSERS"
+                    ],
+                    "drives": [
+                        {
+                            "driveLetter": "G",
+                            "uncPath": "\\\\FILESERVER.CORP\\GroupShare"
+                        }
+                    ]
+                },
+                {
+                    "group": [
+                        "ExecutiveSec"
+                    ],
+                    "drives": [
+                        {
+                            "driveLetter": "H",
+                            "uncPath": "\\\\FILESERVER.CORP\\BUSINESSSECRETS"
+                        }
+                    ]
+                },
+                {
+                    "group": [
+                        "InternSec",
+                        "ExecutiveSec"
+                    ],
+                    "drives": [
+                        {
+                            "driveLetter": "I",
+                            "uncPath": "\\\\FILESERVER.CORP\\INTERNTHINGS"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "required": [
+        "drives"
+    ],
+    "properties": {
+        "drives": {
+            "$id": "#/properties/drives",
+            "type": "array",
+            "title": "The drives schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "group": [
+                            "ALLUSERS"
+                        ],
+                        "drives": [
+                            {
+                                "driveLetter": "G",
+                                "uncPath": "\\\\FILESERVER.CORP\\GroupShare"
+                            }
+                        ]
+                    },
+                    {
+                        "group": [
+                            "ExecutiveSec"
+                        ],
+                        "drives": [
+                            {
+                                "driveLetter": "H",
+                                "uncPath": "\\\\FILESERVER.CORP\\BUSINESSSECRETS"
+                            }
+                        ]
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/drives/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/drives/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "group": [
+                                    "ALLUSERS"
+                                ],
+                                "drives": [
+                                    {
+                                        "driveLetter": "G",
+                                        "uncPath": "\\\\FILESERVER.CORP\\GroupShare"
+                                    }
+                                ]
+                            }
+                        ],
+                        "required": [
+                            "group",
+                            "drives"
+                        ],
+                        "properties": {
+                            "group": {
+                                "$id": "#/properties/drives/items/anyOf/0/properties/group",
+                                "type": "array",
+                                "title": "The group schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": [],
+                                "examples": [
+                                    [
+                                        "ALLUSERS"
+                                    ]
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/drives/items/anyOf/0/properties/group/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/drives/items/anyOf/0/properties/group/items/anyOf/0",
+                                            "type": "string",
+                                            "title": "The first anyOf schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": "",
+                                            "examples": [
+                                                "ALLUSERS"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "drives": {
+                                "$id": "#/properties/drives/items/anyOf/0/properties/drives",
+                                "type": "array",
+                                "title": "The drives schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": [],
+                                "examples": [
+                                    [
+                                        {
+                                            "driveLetter": "G",
+                                            "uncPath": "\\\\FILESERVER.CORP\\GroupShare"
+                                        }
+                                    ]
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/drives/items/anyOf/0/properties/drives/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/drives/items/anyOf/0/properties/drives/items/anyOf/0",
+                                            "type": "object",
+                                            "title": "The first anyOf schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": {},
+                                            "examples": [
+                                                {
+                                                    "driveLetter": "G",
+                                                    "uncPath": "\\\\FILESERVER.CORP\\GroupShare"
+                                                }
+                                            ],
+                                            "required": [
+                                                "driveLetter",
+                                                "uncPath"
+                                            ],
+                                            "properties": {
+                                                "driveLetter": {
+                                                    "$id": "#/properties/drives/items/anyOf/0/properties/drives/items/anyOf/0/properties/driveLetter",
+                                                    "type": "string",
+                                                    "title": "The driveLetter schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": "",
+                                                    "examples": [
+                                                        "G"
+                                                    ]
+                                                },
+                                                "uncPath": {
+                                                    "$id": "#/properties/drives/items/anyOf/0/properties/drives/items/anyOf/0/properties/uncPath",
+                                                    "type": "string",
+                                                    "title": "The uncPath schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": "",
+                                                    "examples": [
+                                                        "\\\\FILESERVER.CORP\\GroupShare"
+                                                    ]
+                                                }
+                                            },
+                                            "additionalProperties": true
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": true
+}

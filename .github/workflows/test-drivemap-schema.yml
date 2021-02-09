@@ -1,0 +1,56 @@
+name: Drivemap Schema Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+    
+
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: .\function-app
+  JSON_PATH: .\function-app\aad-sec-grp-qry\drivemaps.json
+  SCHEMA_PATH: .\drivemaps_schema.json
+  TESTS_PATH: .\tests
+  FA_ENDPOINT_UAT: ${{ secrets.FA_ENDPOINT_UAT }}
+  SAMPLE_USER: ${{ secrets.SAMPLE_USER }}
+
+jobs:
+  build-and-publish-UAT:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup PowerShell module cache
+      id: cacher
+      uses: actions/cache@v2
+      with:
+        path: "C:\\Users\\runneradmin\\Documents\\PowerShell\\Modules"
+        key: ${{ runner.os }}-dependencies-Pester-TestJsonSchema-PSScriptAnalyzer-GitHubActions
+
+    - name: Install required PowerShell modules
+      if: steps.cacher.outputs.cache-hit != 'true'
+      shell: pwsh
+      run: |
+        Set-PSRepository PSGallery -InstallationPolicy Trusted
+        Install-Module -Name Pester -MaximumVersion 4.10.1 -SkipPublisherCheck -Force
+        Install-Module TestJsonSchema, PSScriptAnalyzer, GitHubActions
+
+    - name: Validate drivemaps.json
+      shell: pwsh
+      run: |
+        Import-Module Pester -RequiredVersion 4.10.1 -Force
+        $fp = ".\.tests"
+        New-Item $fp -ItemType Directory -Force | Out-Null
+        try {
+          Test-JsonSchema -JsonPath $env:JSON_PATH -SchemaPath $env:SCHEMA_PATH -OutputFile "$fp\pester.json.test.xml" -OutputFormat 'NUnitXml'
+        }
+        catch {
+          throw "Drivemaps.json file is malformed or doesn't match schema."
+        }
+    
+    - name: Publish pester test results
+      uses: zyborg/pester-tests-report@v1
+      with:
+        test_results_path: .\.tests\pester.json.test.xml
+        report_name: DriveMaps_Validation
+        github_token: ${{ secrets.GITHUB_TOKEN }}

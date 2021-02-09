@@ -1,0 +1,68 @@
+name: Drivemap Schema Validation
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: .\function-app # set this to the path to your web app project, defaults to the repository root
+  JSON_PATH: .\function-app\aad-sec-grp-qry\drivemaps.json
+  SCHEMA_PATH: .\drivemaps_schema.json
+  TESTS_PATH: .\tests
+  FA_ENDPOINT_UAT: ${{ secrets.FA_ENDPOINT_UAT }}
+  SAMPLE_USER: ben@powers-hell.com
+  FA_UAT_NAME: powers-hell-logonscript-test
+  FA_PROD_NAME: powers-hell-logonscript
+
+jobs:
+  publish-uat-and-prod:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PowerShell module cache
+        id: cacher
+        uses: actions/cache@v2
+        with:
+          path: "C:\\Users\\runneradmin\\Documents\\PowerShell\\Modules"
+          key: ${{ runner.os }}-dependencies-Pester-TestJsonSchema-PSScriptAnalyzer-GitHubActions
+
+      - name: Install required PowerShell modules
+        if: steps.cacher.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Pester -MaximumVersion 4.10.1 -SkipPublisherCheck -Force
+          Install-Module TestJsonSchema, PSScriptAnalyzer, GitHubActions
+
+      - name: Publish Azure Function to UAT slot
+        uses: Azure/functions-action@v1.1.8
+        id: fa-uat
+        with:
+          app-name: ${{ env.FA_UAT_NAME }}
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_UAT }}
+      
+      - name: Test UAT
+        shell: pwsh
+        run: |
+          Import-Module Pester -RequiredVersion 4.10.1 -Force
+          $fp = ".\.tests"
+          New-Item $fp -ItemType Directory -Force | Out-Null
+          Invoke-Pester -Path .\tests\uat.publish.tests.ps1 -OutputFile "$fp\uat.publish.tests.xml" -OutputFormat NUnitXml
+      
+      - name: Publish pester test results
+        uses: zyborg/pester-tests-report@v1
+        with:
+          test_results_path: .\.tests\uat.publish.tests.xml
+          report_name: UAT_Validation
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Publish Azure Function to production slot
+        uses: Azure/functions-action@v1.1.8
+        id: fa-prod
+        with:
+          app-name: ${{ env.FA_PROD_NAME }}
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_UAT }}

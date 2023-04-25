@@ -143,7 +143,7 @@ if ($user) {
     $user
     $userId
     if ($userId) {
-        $groupQuery = "users/$userId/memberOf"
+        $groupQuery = "users/$userId/transitiveMemberOf"
         $groups = (Get-JsonFromGraph -token $token -strQuery $groupQuery -ver v1.0).displayName
     }
     #$crdToMap = New-Object System.Collections.Generic.List[System.Object]
